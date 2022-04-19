@@ -1,0 +1,13 @@
+Changelog of the FD-Toolkit for Gamera
+======================================
+
+Version 1.1.0, Dec 06, 2013
+---------------------------
+
+ - Fourier descriptors no longer crash on empty images or single pixels
+
+
+Version 1.0.0, Oct 21, 2013
+---------------------------
+
+ - first creation

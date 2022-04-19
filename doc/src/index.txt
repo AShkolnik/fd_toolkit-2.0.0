@@ -1,0 +1,179 @@
+==========================
+Overview of the FD-toolkit
+==========================
+
+:Editor: Christian Brandt and Christoph Dalitz
+
+:Version: 1.0.0
+
+Overview
+''''''''
+
+This toolkit implements the Fourier descriptors described in [Dalitz2013]_.
+The number of coefficients (= feature dimension) used is controlled
+by the variable ``FDLENGTH`` in ``gamera/toolkits/plugins/single.py`` and
+``gamera/toolkits/plugins/broken.py``, which is evaluated at the compile
+time of the toolkit. It defaults to 60. When changing it, make sure to
+choose a multiple of 12.
+
+
+All Fourier descriptors are provided as Gamera plugins in the category
+"Features", so that they are immediately available after loading the
+toolkit in Gamera. The features are distributed over two files: 
+``single.py`` provides descriptors that only work on unbroken shapes,
+and ``broken.py`` provides descriptors that work on broken shapes, too.
+
+Documentation
+'''''''''''''
+
+For a detailed documentation of the availabe plugins
+and how they relate to the equations in [Dalitz2013]_, see the Plugins_
+documentation.
+
+The best performing features in [Dalitz2013]_ were fdbroken_a_ for shapes
+combined from an arbitrar number of parts and fdsingle_complex_position_
+for connected shapes consisting of only a single part.
+
+
+.. _Plugins: features.html
+
+.. _fdbroken_a: features.html#fdbroken-a
+
+.. _fdsingle_complex_position: features.html#fdsingle-complex-position
+
+Installation
+''''''''''''
+
+This toolkit has only been tested on Linux and MacOS X.
+The following installation instructions should work for any Unix like
+operating system (MacOS X, Linux, Solaris, FreeBSD, ...) and for MS Windows
+from the Msys shell that comes with Mingw32__.
+
+.. __: http://mingw.org/
+
+Prerequisites
+-------------
+
+First you will need a working installation of Gamera 3.x. See the 
+`Gamera website`__ for details. It is strongly recommended that you use
+a recent version, preferably from SVN.
+
+.. __: http://gamera.sourceforge.net/
+
+If you want to generate the documentation, you will need the additional
+third-party Python libraries docutils_ and pygments_ for handling
+reStructuredText documents.
+
+.. _docutils: http://docutils.sourceforge.net/
+.. _pygments: http://pygments.org/
+
+.. note:: It is generally not necessary to generate the documentation 
+   because it is included in file releases of the toolkit.
+
+
+Building and Installing
+-----------------------
+
+To build and install this toolkit on Linux or MacOS X, go to the base
+directory of the toolkit distribution and run the ``setup.py`` script
+as follows::
+
+   # 1) compile
+   python setup.py build
+
+   # 2) install (requires root privilegue => sudo)
+   sudo python setup.py install
+
+To do the same on MS Windows, open an Msys shell, go to the base directory
+of the toolkit distribution and run the ``setup.py`` script as follows::
+
+   # 1) compile (Msys uses slashes as directory separator)
+   /c/Python25/python.exe setup.py build --compiler=mingw32 bdist_wininst
+
+   # 2) install ('*' depends on the toolkit and python version)
+   start dist/fd_toolkit-*.exe
+
+Note that the standalone scripts are installed into ``/usr/bin`` on Linux,
+but into ``/System/Library/Frameworks/Python.framework/Versions/2.3/bin``
+on MacOS X. As the latter directory is not in the standard search path,
+you could either add it to your search path, or install the scripts
+additionally into ``/usr/bin`` on MacOS X with::
+
+   # install scripts into standard path (MacOS X only)
+   sudo python setup.py install_scripts -d /usr/bin
+
+On MS Windows, the scripts are installed into ``C:\Python2.5\Scripts``.
+To make the scripts startable form the DOS os Msys shell, you should
+add this directory to your search path.
+
+To regenerate the documentation, go to the ``doc`` directory and run the
+``gendoc.py`` script. The output will be placed in the ``doc/html/``
+directory.  The contents of this directory can be placed on a webserver
+for convenient viewing.
+
+.. note:: Before building the documentation you must install the
+   toolkit. Otherwise ``gendoc.py`` will not find the plugin documentation.
+
+
+Installing without root privileges
+----------------------------------
+
+The above installation with ``python setup.py install`` will install
+the toolkit system wide and thus requires root privileges. If you do
+not have root access (Linux) or are no sudoer (MacOS X), you can
+install the OTR toolkit into your home directory. Note however
+that this also requires that gamera is installed into your home directory.
+It is currently not possibole to install gamera globally and only toolkits
+locally.
+
+Here are the steps to install both gamera and the OTR toolkit into
+``~/python``::
+
+   # install gamera locally
+   mkdir ~/python
+   python setup.py install --prefix=~/python
+
+   # build and install the OTR toolkit locally
+   export CFLAGS=-I~/python/include/python2.5/gamera
+   python setup.py build
+   python setup.py install --prefix=~/python
+
+Moreover you should set the following environment variables in your 
+``~/.profile``::
+
+   # search path for python modules
+   export PYTHONPATH=~/python/lib/python
+
+   # search path for executables (eg. gamera_gui)
+   export PATH=~/python/bin:$PATH
+
+
+Uninstallation
+--------------
+
+On MS Windows, you can use the uninstaller from "System Settings/Software".
+
+On Linux and MacOS X, the Python *distutils* do not support uninstallation.
+Thus you need to remove the installed Python library files manually.
+
+All python library files of this toolkit are installed into the 
+``gamera/toolkits/fd_toolkit`` subdirectory of the Python library folder.
+It is thus sufficient to remove this directory for an uninstallation.
+
+Where the python library folder is depends on your system and python version.
+Here are the folders that you need to remove on MacOS X and Debian Linux
+("2.5" stands for the python version; replace it with your actual version):
+
+  - MacOS X: ``/Library/Python/2.5/gamera/toolkits/fd_toolkit``
+
+  - Debian Linux: ``/usr/lib/python2.5/site-packages/gamera/toolkits/fd_toolkit``
+
+
+References
+''''''''''
+
+.. [Dalitz2013] Dalitz, C., Brandt, C., Goebbels, S., Kolanus, D.:
+   `"Fourier Descriptors for Broken Shapes."`__ EURASIP Journal on
+   Advances in Signal Processing 2013:161, 2013
+
+.. __: http://informatik.hsnr.de/~dalitz/data/publications/broken-fourier.pdf
